@@ -83,3 +83,14 @@ model PlayerStats {
   @@index([playerId])
   @@index([seasonId])
 }
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  surname   String
+  email     String   @unique
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
