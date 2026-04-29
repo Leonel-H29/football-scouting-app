@@ -38,7 +38,7 @@ export const createApp = (controllers: {
     });
   });
 
-  app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  app.use('/docs', ...swaggerUi.serve, swaggerUi.setup(swaggerDocument));
   app.use('/api/auth', createAuthRouter(controllers.authController));
 
   app.use(authenticateJwtMiddleware(controllers.jwtTokenService));
