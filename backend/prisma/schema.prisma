@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Position {
+  GOALKEEPER
+  DEFENDER
+  MIDFIELDER
+  FORWARD
+}
+
+model Team {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  country   String
+  logoUrl   String
+  players   Player[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
+  @@index([country])
+}
+
+model Season {
+  id        String       @id @default(cuid())
+  year      Int          @unique
+  name      String       @unique
+  stats     PlayerStats[]
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@index([year])
+}
+
+model Player {
+  id            String       @id @default(cuid())
+  name          String
+  birthDate     DateTime
+  nationality   String
+  position      Position
+  photoUrl      String
+  currentTeamId  String
+  currentTeam    Team         @relation(fields: [currentTeamId], references: [id], onDelete: Restrict)
+  stats         PlayerStats[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([name])
+  @@index([position])
+  @@index([nationality])
+  @@index([currentTeamId])
+}
+
+model PlayerStats {
+  id               String   @id @default(cuid())
+  playerId         String
+  seasonId         String
+  matchesPlayed    Int      @default(0)
+  starts           Int      @default(0)
+  goals            Int      @default(0)
+  assists          Int      @default(0)
+  yellowCards      Int      @default(0)
+  redCards         Int      @default(0)
+  minutesPlayed    Int      @default(0)
+  shots            Int      @default(0)
+  shotsOnTarget    Int      @default(0)
+  keyPasses        Int      @default(0)
+  tackles          Int      @default(0)
+  interceptions    Int      @default(0)
+  dribblesCompleted Int     @default(0)
+  passAccuracy     Float    @default(0)
+
+  player           Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  season           Season   @relation(fields: [seasonId], references: [id], onDelete: Cascade)
+
+  @@unique([playerId, seasonId])
+  @@index([playerId])
+  @@index([seasonId])
+}
