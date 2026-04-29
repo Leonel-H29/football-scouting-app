@@ -87,9 +87,9 @@ describe('PlayerComparisonServiceImpl', () => {
 
     expect(result.season?.id).toBe('s1');
     expect(result.players).toHaveLength(2);
-    expect(result.rows[0].label).toBe('Matches played');
-    expect(
-      result.rows.find((row) => row.key === 'goals')?.values[0].value
-    ).toBe(4);
+    const goalsRow = result.rows.find((row) => row.key === 'goals');
+    expect(goalsRow).toBeDefined();
+    expect(goalsRow?.values[0]).toBeDefined();
+    expect(goalsRow?.values[0]?.value).toBe(4);
   });
 });

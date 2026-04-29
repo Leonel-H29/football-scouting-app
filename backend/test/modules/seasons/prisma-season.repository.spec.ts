@@ -6,9 +6,9 @@ describe('PrismaSeasonRepository', () => {
     const findMany = jest.fn().mockResolvedValue([]);
     const prisma = {
       season: {
-        findMany
-      }
-    } as PrismaClient;
+        findMany,
+      },
+    } as unknown as PrismaClient;
 
     const repository = new PrismaSeasonRepository(prisma);
     await repository.list({ year: 2024 });

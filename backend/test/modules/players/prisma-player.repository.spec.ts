@@ -6,9 +6,9 @@ describe('PrismaPlayerRepository', () => {
     const findMany = jest.fn().mockResolvedValue([]);
     const prisma = {
       player: {
-        findMany
-      }
-    } as PrismaClient;
+        findMany,
+      },
+    } as unknown as PrismaClient;
 
     const repository = new PrismaPlayerRepository(prisma);
     await repository.search({
@@ -16,11 +16,13 @@ describe('PrismaPlayerRepository', () => {
       nationality: 'Argentina',
       position: 'FORWARD',
       birthDateFrom: new Date('1990-01-01T00:00:00.000Z'),
-      birthDateTo: new Date('2000-01-01T00:00:00.000Z')
+      birthDateTo: new Date('2000-01-01T00:00:00.000Z'),
     });
 
     expect(findMany).toHaveBeenCalledTimes(1);
-    const query = findMany.mock.calls[0][0] as { where: { name: { contains: string }; nationality: { contains: string } } };
+    const query = findMany.mock.calls[0][0] as {
+      where: { name: { contains: string }; nationality: { contains: string } };
+    };
     expect(query.where.name.contains).toBe('Leo');
     expect(query.where.nationality.contains).toBe('Argentina');
   });

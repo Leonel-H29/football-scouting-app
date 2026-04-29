@@ -6,9 +6,9 @@ describe('PrismaTeamRepository', () => {
     const findMany = jest.fn().mockResolvedValue([]);
     const prisma = {
       team: {
-        findMany
-      }
-    } as PrismaClient;
+        findMany,
+      },
+    } as unknown as PrismaClient;
 
     const repository = new PrismaTeamRepository(prisma);
     await repository.list({ name: 'River', country: 'Argentina' });

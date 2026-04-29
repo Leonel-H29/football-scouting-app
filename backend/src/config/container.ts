@@ -13,17 +13,32 @@ import { PrismaSeasonRepository } from '../modules/seasons/infrastructure/reposi
 import { SeasonListServiceImpl } from '../modules/seasons/application/services/season-list.service';
 import { ListSeasonsAction } from '../modules/seasons/application/actions/list-seasons.action';
 import { SeasonsController } from '../modules/seasons/infrastructure/controllers/seasons.controller';
+import { PrismaUserRepository } from '../modules/auth/infrastructure/repositories/prisma-user.repository';
+import { BcryptPasswordHasherService } from '../modules/auth/application/services/bcrypt-password-hasher.service';
+import { JwtTokenService } from '../modules/auth/application/services/jwt-token.service';
+import { RegisterAction } from '../modules/auth/application/actions/register.action';
+import { LoginAction } from '../modules/auth/application/actions/login.action';
+import { AuthController } from '../modules/auth/infrastructure/controllers/auth.controller';
 
 export const createControllers = (): {
   readonly playersController: PlayersController;
   readonly teamsController: TeamsController;
   readonly seasonsController: SeasonsController;
+  readonly authController: AuthController;
+  readonly jwtTokenService: JwtTokenService;
 } => {
   const playerRepository = new PrismaPlayerRepository(prismaClient);
   const playerFilterService = new PlayerFilterServiceImpl();
-  const playerComparisonService = new PlayerComparisonServiceImpl(playerRepository);
-  const searchPlayersAction = new SearchPlayersAction(playerRepository, playerFilterService);
-  const comparePlayersAction = new ComparePlayersAction(playerComparisonService);
+  const playerComparisonService = new PlayerComparisonServiceImpl(
+    playerRepository
+  );
+  const searchPlayersAction = new SearchPlayersAction(
+    playerRepository,
+    playerFilterService
+  );
+  const comparePlayersAction = new ComparePlayersAction(
+    playerComparisonService
+  );
 
   const teamRepository = new PrismaTeamRepository(prismaClient);
   const teamListService = new TeamListServiceImpl(teamRepository);
@@ -33,9 +48,24 @@ export const createControllers = (): {
   const seasonListService = new SeasonListServiceImpl(seasonRepository);
   const listSeasonsAction = new ListSeasonsAction(seasonListService);
 
+  const userRepository = new PrismaUserRepository(prismaClient);
+  const passwordHasher = new BcryptPasswordHasherService();
+  const jwtTokenService = new JwtTokenService();
+  const registerAction = new RegisterAction(userRepository, passwordHasher);
+  const loginAction = new LoginAction(
+    userRepository,
+    passwordHasher,
+    jwtTokenService
+  );
+
   return {
-    playersController: new PlayersController(searchPlayersAction, comparePlayersAction),
+    playersController: new PlayersController(
+      searchPlayersAction,
+      comparePlayersAction
+    ),
     teamsController: new TeamsController(listTeamsAction),
-    seasonsController: new SeasonsController(listSeasonsAction)
+    seasonsController: new SeasonsController(listSeasonsAction),
+    authController: new AuthController(registerAction, loginAction),
+    jwtTokenService,
   };
 };

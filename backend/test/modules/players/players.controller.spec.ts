@@ -3,6 +3,7 @@ import request from 'supertest';
 import { PlayersController } from '../../../src/modules/players/infrastructure/controllers/players.controller';
 import type { SearchPlayersAction } from '../../../src/modules/players/application/actions/search-players.action';
 import type { ComparePlayersAction } from '../../../src/modules/players/application/actions/compare-players.action';
+import { createPlayersRouter } from '../../../src/modules/players/infrastructure/router';
 
 describe('PlayersController', () => {
   it('returns search results', async () => {
@@ -21,22 +22,25 @@ describe('PlayersController', () => {
               id: 't1',
               name: 'Team 1',
               country: 'Argentina',
-              logoUrl: 'https://example.com/t1.png'
-            }
+              logoUrl: 'https://example.com/t1.png',
+            },
           },
-          latestStat: null
-        }
-      ])
-    } as SearchPlayersAction;
+          latestStat: null,
+        },
+      ]),
+    } as unknown as SearchPlayersAction;
 
     const comparePlayersAction: ComparePlayersAction = {
-      execute: jest.fn()
-    } as ComparePlayersAction;
+      execute: jest.fn(),
+    } as unknown as ComparePlayersAction;
 
-    const controller = new PlayersController(searchPlayersAction, comparePlayersAction);
+    const controller = new PlayersController(
+      searchPlayersAction,
+      comparePlayersAction
+    );
     const app = express();
     app.use(express.json());
-    app.use('/api/players', controller.router());
+    app.use('/api/players', createPlayersRouter(controller));
 
     const response = await request(app).get('/api/players?name=Player');
 
