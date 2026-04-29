@@ -12,17 +12,22 @@ export class PlayerFilterServiceImpl implements PlayerFilterService {
     const referenceDate = startOfTodayUtc();
 
     return {
-      name: dto.name?.trim(),
-      position: dto.position,
-      nationality: dto.nationality?.trim(),
-      birthDateFrom:
-        dto.maxAge !== undefined
-          ? addDays(subtractYears(referenceDate, dto.maxAge + 1), 1)
-          : undefined,
-      birthDateTo:
-        dto.minAge !== undefined
-          ? subtractYears(referenceDate, dto.minAge)
-          : undefined,
+      ...(dto.name?.trim() ? { name: dto.name.trim() } : {}),
+      ...(dto.position !== undefined ? { position: dto.position } : {}),
+      ...(dto.nationality?.trim()
+        ? { nationality: dto.nationality.trim() }
+        : {}),
+      ...(dto.maxAge !== undefined
+        ? {
+            birthDateFrom: addDays(
+              subtractYears(referenceDate, dto.maxAge + 1),
+              1
+            ),
+          }
+        : {}),
+      ...(dto.minAge !== undefined
+        ? { birthDateTo: subtractYears(referenceDate, dto.minAge) }
+        : {}),
     };
   }
 }

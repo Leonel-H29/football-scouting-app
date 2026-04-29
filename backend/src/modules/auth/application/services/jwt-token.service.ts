@@ -13,9 +13,12 @@ const isObjectPayload = (
 
 export class JwtTokenService implements TokenService {
   sign(payload: JwtPayload): string {
-    return jwt.sign(payload, config.jwtSecret, {
-      expiresIn: config.jwtExpiresIn,
-    });
+    const options =
+      config.jwtExpiresIn === undefined
+        ? {}
+        : { expiresIn: config.jwtExpiresIn };
+
+    return jwt.sign(payload, config.jwtSecret, options);
   }
 
   verify(token: string): JwtPayload {

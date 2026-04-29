@@ -7,10 +7,12 @@ export class TeamListServiceImpl implements TeamListService {
   constructor(private readonly teamRepository: TeamRepository) {}
 
   async list(criteria: ListTeamsQuery): Promise<ReadonlyArray<Team>> {
-    const teams = await this.teamRepository.list({
-      name: criteria.name?.trim(),
-      country: criteria.country?.trim(),
-    });
+    const filters = {
+      ...(criteria.name?.trim() ? { name: criteria.name.trim() } : {}),
+      ...(criteria.country?.trim() ? { country: criteria.country.trim() } : {}),
+    };
+
+    const teams = await this.teamRepository.list(filters);
 
     return [...teams].sort((left, right) =>
       left.name.localeCompare(right.name)

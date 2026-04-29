@@ -7,10 +7,12 @@ export class SeasonListServiceImpl implements SeasonListService {
   constructor(private readonly seasonRepository: SeasonRepository) {}
 
   async list(criteria: ListSeasonsQuery): Promise<ReadonlyArray<Season>> {
-    const seasons = await this.seasonRepository.list({
-      year: criteria.year,
-      name: criteria.name?.trim(),
-    });
+    const filters = {
+      ...(criteria.year !== undefined ? { year: criteria.year } : {}),
+      ...(criteria.name?.trim() ? { name: criteria.name.trim() } : {}),
+    };
+
+    const seasons = await this.seasonRepository.list(filters);
 
     return [...seasons].sort((left, right) => right.year - left.year);
   }

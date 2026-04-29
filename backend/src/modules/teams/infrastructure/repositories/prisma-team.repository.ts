@@ -13,23 +13,27 @@ export class PrismaTeamRepository
   }
 
   async list(criteria: TeamFilterCriteria): Promise<ReadonlyArray<Team>> {
+    const where = {
+      ...(criteria.name !== undefined
+        ? {
+            name: {
+              contains: criteria.name,
+              mode: 'insensitive' as const,
+            },
+          }
+        : {}),
+      ...(criteria.country !== undefined
+        ? {
+            country: {
+              contains: criteria.country,
+              mode: 'insensitive' as const,
+            },
+          }
+        : {}),
+    };
+
     const teams = await this.prisma.team.findMany({
-      where: {
-        name:
-          criteria.name === undefined
-            ? undefined
-            : {
-                contains: criteria.name,
-                mode: 'insensitive',
-              },
-        country:
-          criteria.country === undefined
-            ? undefined
-            : {
-                contains: criteria.country,
-                mode: 'insensitive',
-              },
-      },
+      where,
       orderBy: {
         name: 'asc',
       },
@@ -42,7 +46,6 @@ export class PrismaTeamRepository
       logoUrl: team.logoUrl,
     }));
   }
-
   async findById(teamId: string): Promise<Team | null> {
     const team = await this.prisma.team.findUnique({
       where: { id: teamId },

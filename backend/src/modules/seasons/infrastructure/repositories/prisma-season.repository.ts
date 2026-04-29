@@ -13,17 +13,15 @@ export class PrismaSeasonRepository
   }
 
   async list(criteria: SeasonFilterCriteria): Promise<ReadonlyArray<Season>> {
+    const where = {
+      ...(criteria.year !== undefined ? { year: criteria.year } : {}),
+      ...(criteria.name !== undefined
+        ? { name: { contains: criteria.name, mode: 'insensitive' as const } }
+        : {}),
+    };
+
     const seasons = await this.prisma.season.findMany({
-      where: {
-        year: criteria.year,
-        name:
-          criteria.name === undefined
-            ? undefined
-            : {
-                contains: criteria.name,
-                mode: 'insensitive',
-              },
-      },
+      where,
       orderBy: {
         year: 'desc',
       },
