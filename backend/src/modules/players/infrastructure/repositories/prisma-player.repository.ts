@@ -6,12 +6,12 @@ import {
 } from '../../../../shared/timezones/date-utils';
 import type { PlayerRepository } from '../../domain/repositories/player-repository.interface';
 import type { PlayerSearchCriteria } from '../../domain/interfaces/player-search-criteria.interface';
-import type { PlayerSearchResult } from '../../domain/interfaces/player-search-result.interface';
+import type { PlayerSearchPage } from '../../domain/interfaces/player-search-page.interface';
 import type { PlayerComparisonCandidate } from '../../domain/interfaces/player-comparison-candidate.interface';
 import type { Player } from '../../domain/interfaces/player.interface';
 import type { PlayerStat } from '../../domain/interfaces/player-stat.interface';
-import type { TeamSummary } from '../../domain/interfaces/team-summary.interface';
-import type { Season } from '../../domain/interfaces/season.interface';
+import type { Team } from '../../../teams/domain/interfaces/team.interface';
+import type { Season } from '../../../seasons/domain/interfaces/season.interface';
 import type { PlayerPosition } from '../../domain/interfaces/player-position.interface';
 
 type PrismaPlayerWithRelations = Prisma.PlayerGetPayload<{
@@ -42,9 +42,7 @@ export class PrismaPlayerRepository
     super(prisma);
   }
 
-  async search(
-    criteria: PlayerSearchCriteria
-  ): Promise<ReadonlyArray<PlayerSearchResult>> {
+  async search(criteria: PlayerSearchCriteria): Promise<PlayerSearchPage> {
     const where: Prisma.PlayerWhereInput = {};
 
     if (criteria.name !== undefined) {
@@ -79,30 +77,50 @@ export class PrismaPlayerRepository
       };
     }
 
-    const players = await this.prisma.player.findMany({
-      where,
-      include: {
-        currentTeam: true,
-        stats: {
-          include: {
-            season: true,
-          },
-          orderBy: {
-            season: {
-              year: 'desc',
+    const skip = (criteria.page - 1) * criteria.limit;
+
+    const [totalItems, players] = await this.prisma.$transaction([
+      this.prisma.player.count({ where }),
+      this.prisma.player.findMany({
+        where,
+        include: {
+          currentTeam: true,
+          stats: {
+            include: {
+              season: true,
+            },
+            orderBy: {
+              season: {
+                year: 'desc',
+              },
             },
           },
         },
-      },
-      orderBy: {
-        name: 'asc',
-      },
-    });
+        orderBy: {
+          name: 'asc',
+        },
+        skip,
+        take: criteria.limit,
+      }),
+    ]);
 
-    return players.map((player) => ({
-      player: this.mapPlayer(player),
-      latestStat: this.mapLatestStat(player),
-    }));
+    const totalPages =
+      totalItems === 0 ? 0 : Math.ceil(totalItems / criteria.limit);
+
+    return {
+      data: players.map((player) => ({
+        player: this.mapPlayer(player),
+        latestStat: this.mapLatestStat(player),
+      })),
+      pagination: {
+        page: criteria.page,
+        limit: criteria.limit,
+        totalItems,
+        totalPages,
+        hasNextPage: criteria.page < totalPages,
+        hasPreviousPage: criteria.page > 1,
+      },
+    };
   }
 
   async findForComparison(
@@ -197,7 +215,7 @@ export class PrismaPlayerRepository
     name: string;
     country: string;
     logoUrl: string;
-  }): TeamSummary {
+  }): Team {
     return {
       id: team.id,
       name: team.name,

@@ -118,6 +118,29 @@ export const swaggerDocument = {
             in: 'query',
             schema: { type: 'integer', minimum: 15, maximum: 50 },
           },
+          {
+            name: 'page',
+            in: 'query',
+            required: false,
+            schema: {
+              type: 'integer',
+              minimum: 1,
+              default: 1,
+            },
+            description: 'Page number (starts at 1)',
+          },
+          {
+            name: 'limit',
+            in: 'query',
+            required: false,
+            schema: {
+              type: 'integer',
+              minimum: 1,
+              maximum: 100,
+              default: 20,
+            },
+            description: 'Number of items per page',
+          },
         ],
         responses: {
           200: {

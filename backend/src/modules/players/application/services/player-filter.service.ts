@@ -7,9 +7,14 @@ import type { PlayerFilterService } from './interfaces/player-filter.service.int
 import type { PlayerSearchCriteria } from '../../domain/interfaces/player-search-criteria.interface';
 import type { SearchPlayersQuery } from '../../domain/interfaces/search-players-query.interface';
 
+const DEFAULT_PAGE = 1;
+const DEFAULT_LIMIT = 20;
+
 export class PlayerFilterServiceImpl implements PlayerFilterService {
   buildCriteria(dto: SearchPlayersQuery): PlayerSearchCriteria {
     const referenceDate = startOfTodayUtc();
+    const page = dto.page ?? DEFAULT_PAGE;
+    const limit = dto.limit ?? DEFAULT_LIMIT;
 
     return {
       ...(dto.name?.trim() ? { name: dto.name.trim() } : {}),
@@ -28,6 +33,8 @@ export class PlayerFilterServiceImpl implements PlayerFilterService {
       ...(dto.minAge !== undefined
         ? { birthDateTo: subtractYears(referenceDate, dto.minAge) }
         : {}),
+      page,
+      limit,
     };
   }
 }

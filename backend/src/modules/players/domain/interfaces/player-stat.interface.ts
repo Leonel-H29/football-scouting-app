@@ -1,4 +1,4 @@
-import type { Season } from './season.interface';
+import type { Season } from '../../../seasons/domain/interfaces/season.interface';
 
 export interface PlayerStat {
   readonly season: Season;

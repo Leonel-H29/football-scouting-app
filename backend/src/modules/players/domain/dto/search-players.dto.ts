@@ -63,4 +63,25 @@ export class SearchPlayersQueryDto implements SearchPlayersQuery {
   @Min(15)
   @Max(50)
   maxAge?: number;
+
+  @ApiPropertyOptional({
+    description: 'Page number for offset-based pagination',
+    example: 1,
+  })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  page?: number;
+
+  @ApiPropertyOptional({
+    description: 'Items per page',
+    example: 20,
+  })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  @Max(100)
+  limit?: number;
 }

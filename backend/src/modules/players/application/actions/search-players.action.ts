@@ -1,7 +1,7 @@
 import type { PlayerFilterService } from '../services/interfaces/player-filter.service.interface';
 import type { PlayerRepository } from '../../domain/repositories/player-repository.interface';
 import type { SearchPlayersQuery } from '../../domain/interfaces/search-players-query.interface';
-import type { PlayerSearchResult } from '../../domain/interfaces/player-search-result.interface';
+import type { PlayerSearchPage } from '../../domain/interfaces/player-search-page.interface';
 
 export class SearchPlayersAction {
   constructor(
@@ -9,9 +9,7 @@ export class SearchPlayersAction {
     private readonly playerFilterService: PlayerFilterService
   ) {}
 
-  async execute(
-    dto: SearchPlayersQuery
-  ): Promise<ReadonlyArray<PlayerSearchResult>> {
+  async execute(dto: SearchPlayersQuery): Promise<PlayerSearchPage> {
     const criteria = this.playerFilterService.buildCriteria(dto);
     return this.playerRepository.search(criteria);
   }

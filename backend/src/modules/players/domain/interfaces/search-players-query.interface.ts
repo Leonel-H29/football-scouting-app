@@ -6,4 +6,6 @@ export interface SearchPlayersQuery {
   readonly nationality?: string;
   readonly minAge?: number;
   readonly maxAge?: number;
+  readonly page?: number;
+  readonly limit?: number;
 }

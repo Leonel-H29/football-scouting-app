@@ -22,7 +22,7 @@ export class PlayersController {
   @ApiOperation({
     summary: 'Search players',
     description:
-      'Search players by name and filter them by position, nationality, and age range.',
+      'Search players by name and filter them by position, nationality, and age range. Pagination is supported through page and limit query params.',
   })
   @ApiResponse({
     status: 200,
@@ -43,7 +43,8 @@ export class PlayersController {
 
       response.status(200).json({
         success: true,
-        data: result,
+        data: result.data,
+        pagination: result.pagination,
       });
     } catch (error) {
       next(error);
