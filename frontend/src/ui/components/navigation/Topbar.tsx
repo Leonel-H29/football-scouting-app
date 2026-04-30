@@ -28,10 +28,6 @@ export const Topbar = ({ sidebarOpen, onToggleSidebar }: Props) => {
         </h1>
       </div>
       <div className="topbar__actions">
-        <div className="topbar__badge">
-          <ShieldCheck size={16} />
-          <span>JWT secured</span>
-        </div>
         <button
           className="icon-button"
           onClick={logout}
