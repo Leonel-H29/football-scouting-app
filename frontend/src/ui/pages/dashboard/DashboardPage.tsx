@@ -1,3 +1,4 @@
+
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Heart, Trophy, Users, ShieldCheck } from 'lucide-react';
@@ -8,10 +9,11 @@ import { EmptyState } from '@/ui/components/common/EmptyState';
 import { Skeleton } from '@/ui/components/common/Skeleton';
 import { MetricPill } from '@/ui/components/common/MetricPill';
 import { formatInteger } from '@/shared/utils/format';
+import { PLAYER_AVATAR_FALLBACK } from '@/shared/constants/media';
+import { PlayerListItem } from '@/shared/types/domain';
 
 export const DashboardPage = () => {
-  const filters = useMemo(() => ({ name: '', position: undefined, nationality: '', minAge: undefined, maxAge: undefined }), []);
-  const { players, loading } = usePlayers(filters);
+  const { players, loading } = usePlayers({ page: 1, limit: 'ALL' });
   const { favorites } = useFavorites();
 
   const overview = useMemo(() => {
@@ -20,6 +22,13 @@ export const DashboardPage = () => {
     const teams = new Set(players.map((item) => item.player.currentTeam.name)).size;
     return { goals, assists, teams };
   }, [players]);
+
+  const favoritePlayers = useMemo(
+    () => favorites
+      .map((favoriteId) => players.find((item) => item.player.id === favoriteId))
+      .filter((item): item is PlayerListItem => Boolean(item)),
+    [favorites, players],
+  );
 
   return (
     <div className="page-grid">
@@ -44,10 +53,33 @@ export const DashboardPage = () => {
       <section className="dashboard-grid">
         <Card>
           <div className="card__header"><h3>Favorites</h3><Heart size={18} /></div>
-          <div className="dashboard-list">
-            {favorites.length === 0 ? (
+          <div className="dashboard-list dashboard-list--scrollable">
+            {loading ? (
+              <div className="stack">
+                <Skeleton className="preview-card" />
+                <Skeleton className="preview-card" />
+                <Skeleton className="preview-card" />
+              </div>
+            ) : favoritePlayers.length === 0 ? (
               <EmptyState title="No favorites yet" subtitle="Save players from the list to build a shortlist." />
-            ) : favorites.map((id) => <div key={id} className="dashboard-list__item">{id}</div>)}
+            ) : favoritePlayers.map((item) => (
+              <div key={item.player.id} className="dashboard-list__item dashboard-list__item--player">
+                <img
+                  src={item.player.photoUrl && item.player.photoUrl.length > 0 ? item.player.photoUrl : PLAYER_AVATAR_FALLBACK}
+                  alt={item.player.name}
+                  className="dashboard-list__avatar"
+                  loading="lazy"
+                  onError={(event) => {
+                    event.currentTarget.src = PLAYER_AVATAR_FALLBACK;
+                  }}
+                />
+                <div className="dashboard-list__copy">
+                  <strong>{item.player.name}</strong>
+                  <span>{item.player.currentTeam.name}</span>
+                  <span>{item.player.position}</span>
+                </div>
+              </div>
+            ))}
           </div>
         </Card>
         <Card>

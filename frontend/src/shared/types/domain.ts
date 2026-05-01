@@ -121,5 +121,5 @@ export interface PlayerListFilters {
   minAge?: number;
   maxAge?: number;
   page?: number;
-  limit?: number;
+  limit?: number | 'ALL';
 }

@@ -6,6 +6,7 @@ interface PlayerSelectionState {
   togglePlayerId: (playerId: string) => void;
   setSelectedPlayerIds: (playerIds: readonly string[]) => void;
   clearSelectedPlayerIds: () => void;
+  removeSelectedPlayer: (playerId: string) => void;
   isPlayerSelected: (playerId: string) => boolean;
 }
 
@@ -27,6 +28,9 @@ export const usePlayerSelectionStore = create<PlayerSelectionState>()(
       }),
       setSelectedPlayerIds: (playerIds: readonly string[]) => set({ selectedPlayerIds: unique(playerIds).slice(0, MAX_SELECTED_PLAYERS) }),
       clearSelectedPlayerIds: () => set({ selectedPlayerIds: [] }),
+      removeSelectedPlayer: (playerId: string) => set((state) => ({
+        selectedPlayerIds: state.selectedPlayerIds.filter((item) => item !== playerId),
+      })),
       isPlayerSelected: (playerId: string) => get().selectedPlayerIds.includes(playerId),
     }),
     {

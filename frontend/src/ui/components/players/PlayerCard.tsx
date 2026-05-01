@@ -1,12 +1,12 @@
-import { useState } from 'react';
+
+import { useEffect, useState } from 'react';
 import { Bookmark, BookmarkCheck, GitCompareArrows, Shirt } from 'lucide-react';
 import { PlayerListItem } from '@/shared/types/domain';
+import { PLAYER_AVATAR_FALLBACK } from '@/shared/constants/media';
 import { Button } from '@/ui/components/common/Button';
 import { Card } from '@/ui/components/common/Card';
 import { Tag } from '@/ui/components/common/Tag';
 import { formatDate, formatInteger } from '@/shared/utils/format';
-
-const FALLBACK_IMAGE = 'https://img.magnific.com/premium-vector/soccer-player-black-simple-icon-isolated-white-background_98402-68338.jpg';
 
 interface Props {
   item: PlayerListItem;
@@ -19,18 +19,22 @@ interface Props {
 
 export const PlayerCard = ({ item, selected, favorite, onSelect, onToggleFavorite, canSelect }: Props) => {
   const { player, latestStat } = item;
-  const [imageSrc, setImageSrc] = useState(player.photoUrl || FALLBACK_IMAGE);
-  const avatarSrc = imageSrc || FALLBACK_IMAGE;
+  const initialAvatarSrc = player.photoUrl && player.photoUrl.length > 0 ? player.photoUrl : PLAYER_AVATAR_FALLBACK;
+  const [avatarSrc, setAvatarSrc] = useState(initialAvatarSrc);
+
+  useEffect(() => {
+    setAvatarSrc(initialAvatarSrc);
+  }, [initialAvatarSrc]);
 
   return (
-    <Card className="player-card">
+    <Card className={`player-card${selected ? ' player-card--selected' : ''}`}>
       <div className="player-card__header">
         <img
           src={avatarSrc}
           alt={player.name}
           className="player-card__avatar"
           loading="lazy"
-          onError={() => setImageSrc(FALLBACK_IMAGE)}
+          onError={() => setAvatarSrc(PLAYER_AVATAR_FALLBACK)}
         />
         <div>
           <div className="player-card__title-row">

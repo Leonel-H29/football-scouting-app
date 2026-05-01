@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { useDependencies } from '@/app/providers/AppProviders';
 import { CompareResult, PaginationMeta, PlayerListFilters, PlayerListItem, Season, Team } from '@/shared/types/domain';
@@ -21,6 +22,8 @@ export const usePlayers = (filters: PlayerListFilters) => {
         setPlayers(result.value.items);
         setPagination(result.value.pagination);
       } else {
+        setPlayers([]);
+        setPagination(null);
         setError(result.error);
       }
       setLoading(false);
@@ -55,7 +58,10 @@ export const useComparePlayers = (playerIds: readonly string[], seasonId?: strin
     playerRepository.compare(playerIds, seasonId).then((result) => {
       if (!isActive) return;
       if (result.ok) setData(result.value);
-      else setError(result.error);
+      else {
+        setData(null);
+        setError(result.error);
+      }
       setLoading(false);
     });
 

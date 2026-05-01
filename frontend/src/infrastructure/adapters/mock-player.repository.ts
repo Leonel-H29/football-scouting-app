@@ -37,8 +37,8 @@ const filterItems = (filters: PlayerListFilters): PlayerListItem[] =>
   });
 
 const buildPagination = (totalItems: number, page: number, limit: number): PaginationMeta => {
-  const safeLimit = limit > 0 ? limit : totalItems || 1;
-  const totalPages = safeLimit >= totalItems ? 1 : Math.ceil(totalItems / safeLimit);
+  const safeLimit = Math.max(1, limit);
+  const totalPages = Math.max(1, Math.ceil(totalItems / safeLimit));
   const safePage = Math.min(Math.max(page, 1), totalPages);
   return {
     page: safePage,
@@ -54,7 +54,7 @@ export class MockPlayerRepository implements PlayerRepository {
   async search(filters: PlayerListFilters): Promise<Result<PlayerSearchResult, string>> {
     const filtered = filterItems(filters);
     const page = filters.page ?? 1;
-    const limit = filters.limit ?? 10;
+    const limit = filters.limit === 'ALL' ? Math.max(1, filtered.length || 1) : (filters.limit ?? 10);
     const pagination = buildPagination(filtered.length, page, limit);
     const start = (pagination.page - 1) * pagination.limit;
     const items = pagination.limit >= filtered.length ? filtered : filtered.slice(start, start + pagination.limit);

@@ -379,6 +379,10 @@ button {
   display: grid;
   gap: 1rem;
 }
+.player-card--selected {
+  outline: 1px solid rgba(0, 224, 148, 0.45);
+  box-shadow: 0 0 0 1px rgba(0, 224, 148, 0.15), var(--shadow);
+}
 .player-card__header {
   display: flex;
   align-items: center;
@@ -584,6 +588,13 @@ button {
 .section-header--space {
   align-items: end;
 }
+.section-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
 .selection-bar {
   padding: 0.85rem 1rem;
   border: 1px solid var(--border);
@@ -597,6 +608,75 @@ button {
 .dashboard-list {
   display: grid;
   gap: 0.6rem;
+}
+.dashboard-list--scrollable {
+  max-height: 420px;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+.dashboard-list__item--player,
+.favorite-player-row__main {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+}
+.dashboard-list__item--player {
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.dashboard-list__item--player:last-child {
+  border-bottom: 0;
+}
+.dashboard-list__avatar,
+.favorite-player-row__avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+}
+.dashboard-list__copy,
+.favorite-player-row__content {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+.favorite-list {
+  display: grid;
+  gap: 0.9rem;
+  max-height: 66vh;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+.favorite-player-row {
+  display: grid;
+  gap: 1rem;
+}
+.favorite-player-row--selected {
+  outline: 1px solid rgba(0, 224, 148, 0.45);
+}
+.favorite-player-row__title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.favorite-player-row__stats {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  color: var(--muted);
+}
+.favorite-player-row__stats strong {
+  color: var(--text);
+}
+.favorite-player-row__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
 .dashboard-snapshot {
   display: grid;
@@ -704,8 +784,17 @@ button {
     flex-direction: column;
     align-items: flex-start;
   }
-  .player-card__header {
+  .section-header__actions {
+    justify-content: flex-start;
+  }
+  .player-card__header,
+  .favorite-player-row__main,
+  .dashboard-list__item--player {
     align-items: flex-start;
+    flex-direction: column;
+  }
+  .favorite-player-row__actions {
+    justify-content: flex-start;
   }
   .card__header,
   .section-header,

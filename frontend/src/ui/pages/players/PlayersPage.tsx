@@ -2,17 +2,26 @@ import { useMemo } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { PlayerCard } from '@/ui/components/players/PlayerCard';
 import { PlayerFilters } from '@/ui/components/players/PlayerFilters';
-import { PlayersPagination, PlayerPageSize } from '@/ui/components/players/PlayersPagination';
+import {
+  PlayersPagination,
+  PlayerPageSize,
+} from '@/ui/components/players/PlayersPagination';
 import { EmptyState } from '@/ui/components/common/EmptyState';
 import { Skeleton } from '@/ui/components/common/Skeleton';
+import { Button } from '@/ui/components/common/Button';
 import { useFavorites } from '@/ui/hooks/useFavorites';
 import { usePlayerSelection } from '@/ui/hooks/usePlayerSelection';
 import { usePlayers } from '@/ui/hooks/usePlayers';
 import { PlayerQuery, Position } from '@/shared/types/domain';
 
-const positions: readonly Position[] = ['GOALKEEPER', 'DEFENDER', 'MIDFIELDER', 'FORWARD'];
+const positions: readonly Position[] = [
+  'GOALKEEPER',
+  'DEFENDER',
+  'MIDFIELDER',
+  'FORWARD',
+];
 const DEFAULT_PAGE_SIZE: PlayerPageSize = 10;
-const ALL_PAGE_SIZE_LIMIT = 1000;
+const ALL_PAGE_SIZE_LIMIT = 100;
 
 const buildQuery = (params: URLSearchParams): PlayerQuery => ({
   name: params.get('name') ?? '',
@@ -30,7 +39,9 @@ const parsePage = (value: string | null): number => {
 const parsePageSize = (value: string | null): PlayerPageSize => {
   if (value === 'ALL') return 'ALL';
   const parsed = Number(value ?? DEFAULT_PAGE_SIZE);
-  return parsed === 5 || parsed === 10 || parsed === 20 ? parsed : DEFAULT_PAGE_SIZE;
+  return parsed === 5 || parsed === 10 || parsed === 20
+    ? parsed
+    : DEFAULT_PAGE_SIZE;
 };
 
 export const PlayersPage = () => {
@@ -38,18 +49,26 @@ export const PlayersPage = () => {
   const query = useMemo(() => buildQuery(params), [params]);
   const page = useMemo(() => parsePage(params.get('page')), [params]);
   const pageSize = useMemo(() => parsePageSize(params.get('limit')), [params]);
-  const { selectedPlayerIds, togglePlayerId, isPlayerSelected } = usePlayerSelection();
+  const {
+    selectedPlayerIds,
+    togglePlayerId,
+    clearSelectedPlayerIds,
+    isPlayerSelected,
+  } = usePlayerSelection();
   const { toggle, isFavorite } = useFavorites();
 
-  const filters = useMemo(() => ({
-    name: query.name,
-    position: query.position === 'ALL' ? undefined : query.position,
-    nationality: query.nationality,
-    minAge: query.minAge ? Number(query.minAge) : undefined,
-    maxAge: query.maxAge ? Number(query.maxAge) : undefined,
-    page,
-    limit: pageSize === 'ALL' ? ALL_PAGE_SIZE_LIMIT : pageSize,
-  }), [page, pageSize, query]);
+  const filters = useMemo(
+    () => ({
+      name: query.name,
+      position: query.position === 'ALL' ? undefined : query.position,
+      nationality: query.nationality,
+      minAge: query.minAge ? Number(query.minAge) : undefined,
+      maxAge: query.maxAge ? Number(query.maxAge) : undefined,
+      page,
+      limit: pageSize === 'ALL' ? ALL_PAGE_SIZE_LIMIT : pageSize,
+    }),
+    [page, pageSize, query]
+  );
 
   const { players, pagination, loading, error } = usePlayers(filters);
 
@@ -92,7 +111,10 @@ export const PlayersPage = () => {
     togglePlayerId(playerId);
   };
 
-  const compareIds = selectedPlayerIds.join(',');
+  const handleClearSelection = () => {
+    clearSelectedPlayerIds();
+  };
+
   const canSelectMore = selectedPlayerIds.length < 3;
 
   return (
@@ -100,16 +122,36 @@ export const PlayersPage = () => {
       <section className="section-header section-header--space">
         <div>
           <h2>Players</h2>
-          <p className="muted">Search by name and refine the list with typed filters.</p>
+          <p className="muted">
+            Search by name and refine the list with typed filters.
+          </p>
         </div>
-        <Link className="button button--secondary" to={`/players/compare?ids=${compareIds}`}>Open compare</Link>
+        <div className="section-header__actions">
+          {selectedPlayerIds.length > 0 ? (
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={handleClearSelection}
+            >
+              Clear selection
+            </Button>
+          ) : null}
+          {selectedPlayerIds.length > 0 ? (
+            <Link className="button button--primary" to="/players/compare">
+              Open compare
+            </Link>
+          ) : null}
+        </div>
       </section>
 
-      <PlayerFilters value={query} positions={positions} onChange={handleFiltersChange} />
+      <PlayerFilters
+        value={query}
+        positions={positions}
+        onChange={handleFiltersChange}
+      />
 
       <div className="selection-bar">
         <span>{selectedPlayerIds.length} selected across pages</span>
-        <Link className="button button--secondary" to={`/players/compare?ids=${compareIds}`}>Compare selected</Link>
       </div>
 
       {error ? (
@@ -123,7 +165,10 @@ export const PlayersPage = () => {
       ) : (
         <>
           {players.length === 0 ? (
-            <EmptyState title="No players found" subtitle="Try adjusting your filters or search term." />
+            <EmptyState
+              title="No players found"
+              subtitle="Try adjusting your filters or search term."
+            />
           ) : (
             <div className="player-grid">
               {players.map((item) => (

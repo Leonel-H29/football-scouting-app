@@ -1,15 +1,12 @@
-import { useMemo, useState } from 'react';
-import { useDependencies } from '@/app/providers/AppProviders';
+
+import { useFavoritesStore } from '@/app/store/favorites.store';
 
 export const useFavorites = () => {
-  const { favoritesRepository } = useDependencies();
-  const [favorites, setFavorites] = useState<readonly string[]>(favoritesRepository.list());
+  const favorites = useFavoritesStore((state) => state.favoritePlayerIds);
+  const toggle = useFavoritesStore((state) => state.toggleFavoritePlayer);
+  const remove = useFavoritesStore((state) => state.removeFavoritePlayer);
+  const clear = useFavoritesStore((state) => state.clearFavoritePlayers);
+  const isFavorite = useFavoritesStore((state) => state.isFavoritePlayer);
 
-  const toggle = (playerId: string) => {
-    setFavorites(favoritesRepository.toggle(playerId));
-  };
-
-  const isFavorite = useMemo(() => (playerId: string) => favorites.includes(playerId), [favorites]);
-
-  return { favorites, toggle, isFavorite };
+  return { favorites, toggle, remove, clear, isFavorite };
 };

@@ -4,12 +4,14 @@ import {
   Users,
   GitCompareArrows,
   UserCircle2,
+  Heart,
   X,
 } from 'lucide-react';
 
 const links = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/players', label: 'Players', icon: Users },
+  { to: '/players/favorites', label: 'Favorite Players', icon: Heart },
   { to: '/profile', label: 'Profile', icon: UserCircle2 },
 ];
 
