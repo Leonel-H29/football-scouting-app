@@ -15,6 +15,7 @@ import { createSeasonRouter } from './modules/seasons/infrastructure/router';
 import { createAuthRouter } from './modules/auth/infrastructure/routes';
 import { authenticateJwtMiddleware } from './modules/auth/infrastructure/middlewares/authenticate-jwt.middleware';
 import type { JwtTokenService } from './modules/auth/application/services/jwt-token.service';
+import { config } from './config/config';
 
 export const createApp = (controllers: {
   readonly playersController: PlayersController;
@@ -26,7 +27,12 @@ export const createApp = (controllers: {
   const app = express();
 
   app.use(helmet());
-  app.use(cors());
+  app.use(
+    cors({
+      origin: config.webUrl,
+      credentials: true,
+    })
+  );
   app.use(express.json());
 
   app.get('/health', (_request, response) => {

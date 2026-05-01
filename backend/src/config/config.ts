@@ -10,6 +10,7 @@ const configSchema = z.object({
   JWT_SECRET: z.string().min(32),
   JWT_EXPIRES_IN: z.string().min(2).default('1h'),
   BCRYPT_SALT_ROUNDS: z.coerce.number().int().min(10).max(14).default(12),
+  WEB_URL: z.string().min(10),
 });
 
 const parsedConfig = configSchema.parse(process.env);
@@ -21,4 +22,5 @@ export const config: AppConfig = {
   jwtSecret: parsedConfig.JWT_SECRET,
   jwtExpiresIn: parsedConfig.JWT_EXPIRES_IN as SignOptions['expiresIn'],
   bcryptSaltRounds: parsedConfig.BCRYPT_SALT_ROUNDS,
+  webUrl: parsedConfig.WEB_URL,
 };

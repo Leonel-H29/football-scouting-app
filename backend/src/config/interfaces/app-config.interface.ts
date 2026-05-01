@@ -8,4 +8,5 @@ export interface AppConfig {
   readonly jwtSecret: string;
   readonly jwtExpiresIn: SignOptions['expiresIn'];
   readonly bcryptSaltRounds: number;
+  readonly webUrl: string;
 }
