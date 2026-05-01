@@ -1,4 +1,5 @@
 import { useDependencies, useAuthState } from '@/app/providers/AppProviders';
+import { usePlayerSelectionStore } from '@/app/store/player-selection.store';
 import { LoginPayload, RegisterPayload, AuthUser } from '@/shared/types/domain';
 import { useNavigate } from 'react-router-dom';
 
@@ -41,6 +42,7 @@ export const useAuth = () => {
 
   const logout = () => {
     authActions.logout();
+    usePlayerSelectionStore.getState().clearSelectedPlayerIds();
     setUser(null);
     setSession(null);
     navigate('/login', { replace: true });

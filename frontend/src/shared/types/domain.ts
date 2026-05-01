@@ -13,6 +13,15 @@ export interface Season {
   name: string;
 }
 
+export interface PaginationMeta {
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
 export interface PlayerSummary {
   id: string;
   name: string;
@@ -20,7 +29,7 @@ export interface PlayerSummary {
   age: number;
   nationality: string;
   position: Position;
-  photoUrl: string;
+  photoUrl: string | null;
   currentTeam: Team;
 }
 
@@ -45,6 +54,11 @@ export interface PlayerLatestStat {
 export interface PlayerListItem {
   player: PlayerSummary;
   latestStat: PlayerLatestStat | null;
+}
+
+export interface PlayerSearchResult {
+  items: PlayerListItem[];
+  pagination: PaginationMeta;
 }
 
 export interface CompareRowValue {
@@ -106,4 +120,6 @@ export interface PlayerListFilters {
   nationality?: string;
   minAge?: number;
   maxAge?: number;
+  page?: number;
+  limit?: number;
 }

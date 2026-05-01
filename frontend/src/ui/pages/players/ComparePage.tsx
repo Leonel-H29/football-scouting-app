@@ -8,16 +8,31 @@ import { Skeleton } from '@/ui/components/common/Skeleton';
 import { Select } from '@/ui/components/common/Select';
 import { useComparePlayers, useSeasons } from '@/ui/hooks/usePlayers';
 import { useFavorites } from '@/ui/hooks/useFavorites';
+import { usePlayerSelection } from '@/ui/hooks/usePlayerSelection';
 
 export const ComparePage = () => {
   const [params, setParams] = useSearchParams();
-  const ids = useMemo(() => (params.get('ids') ?? '').split(',').filter(Boolean), [params]);
+  const { selectedPlayerIds, setSelectedPlayerIds } = usePlayerSelection();
+  const ids = useMemo(() => {
+    const fromQuery = (params.get('ids') ?? '').split(',').filter(Boolean);
+    return fromQuery.length > 0 ? fromQuery : selectedPlayerIds.slice(0, 3);
+  }, [params, selectedPlayerIds]);
   const seasonId = params.get('seasonId') ?? undefined;
   const seasons = useSeasons();
   const { data, loading, error } = useComparePlayers(ids, seasonId);
   const { favorites } = useFavorites();
 
-  const pickFavoriteIds = () => setParams({ ids: favorites.slice(0, 3).join(',') });
+  const pickFavoriteIds = () => {
+    const nextIds = favorites.slice(0, 3);
+    setSelectedPlayerIds(nextIds);
+    const next = new URLSearchParams(params);
+    if (nextIds.length > 0) {
+      next.set('ids', nextIds.join(','));
+    } else {
+      next.delete('ids');
+    }
+    setParams(next);
+  };
   const changeSeason = (nextSeasonId: string) => {
     const next = new URLSearchParams(params);
     if (nextSeasonId) {

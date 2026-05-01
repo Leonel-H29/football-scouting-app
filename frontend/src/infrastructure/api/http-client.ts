@@ -1,4 +1,5 @@
 import { Envelope, HttpError, HttpResult } from '@/shared/types/api';
+import { PaginationMeta } from '@/shared/types/domain';
 
 const normalizeBaseUrl = (value: string): string => value.replace(/\/$/, '');
 
@@ -23,9 +24,14 @@ export class HttpClient {
         headers,
       });
 
-      const payload = await response.json() as Envelope<T>;
+      const payload = await response.json() as Envelope<T> & { pagination?: PaginationMeta };
       if (payload.success) {
-        return { ok: true, status: response.status, data: payload.data };
+        return {
+          ok: true,
+          status: response.status,
+          data: payload.data,
+          pagination: payload.pagination,
+        };
       }
 
       const error: HttpError = payload.error;

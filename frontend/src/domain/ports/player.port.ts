@@ -1,8 +1,8 @@
-import { CompareResult, PlayerLatestStat, PlayerListFilters, PlayerListItem, Season, Team } from '@/shared/types/domain';
+import { CompareResult, PlayerLatestStat, PlayerListFilters, PlayerSearchResult, Season, Team } from '@/shared/types/domain';
 import { Result } from '@/shared/types/result';
 
 export interface PlayerRepository {
-  search(filters: PlayerListFilters): Promise<Result<PlayerListItem[], string>>;
+  search(filters: PlayerListFilters): Promise<Result<PlayerSearchResult, string>>;
   compare(playerIds: readonly string[], seasonId?: string): Promise<Result<CompareResult, string>>;
   listSeasons(): Promise<Result<Season[], string>>;
   listTeams(): Promise<Result<Team[], string>>;

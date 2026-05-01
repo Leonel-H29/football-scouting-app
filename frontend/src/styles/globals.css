@@ -467,6 +467,102 @@ button {
 .comparison-chart__body {
   width: 100%;
 }
+.comparison-chart__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0.75rem 0 1rem;
+}
+.comparison-chart__legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+.comparison-chart__legend-swatch {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 999px;
+}
+.comparison-tooltip {
+  display: grid;
+  gap: 0.55rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: rgba(14, 14, 14, 0.95);
+  box-shadow: var(--shadow);
+}
+.comparison-tooltip__list {
+  display: grid;
+  gap: 0.45rem;
+}
+.comparison-tooltip__item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 220px;
+}
+.comparison-tooltip__swatch {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 999px;
+}
+.pagination-bar {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.03);
+}
+.pagination-bar__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.pagination-bar__meta div {
+  display: grid;
+  gap: 0.2rem;
+}
+.pagination-bar__meta span {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+.pagination-bar__controls {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.pagination-bar__nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.pagination-bar__page {
+  min-height: 42px;
+  min-width: 42px;
+  padding: 0.5rem 0.8rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
+  cursor: pointer;
+}
+.pagination-bar__page--active {
+  background: rgba(0, 224, 148, 0.14);
+  border-color: rgba(0, 224, 148, 0.55);
+}
+.pagination-bar__ellipsis {
+  padding: 0 0.35rem;
+  color: var(--muted);
+}
 .table-wrap {
   overflow: auto;
 }
@@ -626,6 +722,13 @@ button {
   .form-stack--two-cols,
   .two-col {
     grid-template-columns: 1fr;
+  }
+  .pagination-bar__controls,
+  .pagination-bar__meta {
+    width: 100%;
+  }
+  .pagination-bar__nav {
+    width: 100%;
   }
   .icon-button span {
     display: none;

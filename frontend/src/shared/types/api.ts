@@ -1,3 +1,5 @@
+import { PaginationMeta } from '@/shared/types/domain';
+
 export interface SuccessEnvelope<T> {
   success: true;
   data: T;
@@ -31,5 +33,6 @@ export interface HttpResult<T> {
   ok: boolean;
   status: number;
   data?: T;
+  pagination?: PaginationMeta;
   error?: HttpError;
 }

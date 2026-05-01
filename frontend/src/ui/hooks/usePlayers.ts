@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useDependencies } from '@/app/providers/AppProviders';
-import { PlayerListFilters, PlayerListItem, Season, Team, CompareResult } from '@/shared/types/domain';
+import { CompareResult, PaginationMeta, PlayerListFilters, PlayerListItem, Season, Team } from '@/shared/types/domain';
 
 export const usePlayers = (filters: PlayerListFilters) => {
   const { playerRepository } = useDependencies();
   const [players, setPlayers] = useState<PlayerListItem[]>([]);
+  const [pagination, setPagination] = useState<PaginationMeta | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const filtersKey = JSON.stringify(filters);
@@ -16,15 +17,19 @@ export const usePlayers = (filters: PlayerListFilters) => {
 
     playerRepository.search(filters).then((result) => {
       if (!isActive) return;
-      if (result.ok) setPlayers(result.value);
-      else setError(result.error);
+      if (result.ok) {
+        setPlayers(result.value.items);
+        setPagination(result.value.pagination);
+      } else {
+        setError(result.error);
+      }
       setLoading(false);
     });
 
     return () => { isActive = false; };
   }, [filtersKey, playerRepository]);
 
-  return { players, loading, error };
+  return { players, pagination, loading, error };
 };
 
 export const useComparePlayers = (playerIds: readonly string[], seasonId?: string) => {
@@ -38,6 +43,8 @@ export const useComparePlayers = (playerIds: readonly string[], seasonId?: strin
   useEffect(() => {
     if (playerIds.length < 2) {
       setData(null);
+      setLoading(false);
+      setError(null);
       return;
     }
 

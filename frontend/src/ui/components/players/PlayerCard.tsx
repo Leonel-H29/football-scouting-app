@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Bookmark, BookmarkCheck, GitCompareArrows, Shirt } from 'lucide-react';
 import { PlayerListItem } from '@/shared/types/domain';
 import { Button } from '@/ui/components/common/Button';
@@ -5,20 +6,32 @@ import { Card } from '@/ui/components/common/Card';
 import { Tag } from '@/ui/components/common/Tag';
 import { formatDate, formatInteger } from '@/shared/utils/format';
 
+const FALLBACK_IMAGE = 'https://img.magnific.com/premium-vector/soccer-player-black-simple-icon-isolated-white-background_98402-68338.jpg';
+
 interface Props {
   item: PlayerListItem;
   selected: boolean;
   favorite: boolean;
   onSelect: (playerId: string) => void;
   onToggleFavorite: (playerId: string) => void;
+  canSelect: boolean;
 }
 
-export const PlayerCard = ({ item, selected, favorite, onSelect, onToggleFavorite }: Props) => {
+export const PlayerCard = ({ item, selected, favorite, onSelect, onToggleFavorite, canSelect }: Props) => {
   const { player, latestStat } = item;
+  const [imageSrc, setImageSrc] = useState(player.photoUrl || FALLBACK_IMAGE);
+  const avatarSrc = imageSrc || FALLBACK_IMAGE;
+
   return (
     <Card className="player-card">
       <div className="player-card__header">
-        <img src={player.photoUrl} alt={player.name} className="player-card__avatar" />
+        <img
+          src={avatarSrc}
+          alt={player.name}
+          className="player-card__avatar"
+          loading="lazy"
+          onError={() => setImageSrc(FALLBACK_IMAGE)}
+        />
         <div>
           <div className="player-card__title-row">
             <h3>{player.name}</h3>
@@ -43,8 +56,8 @@ export const PlayerCard = ({ item, selected, favorite, onSelect, onToggleFavorit
       </div>
 
       <div className="player-card__footer">
-        <Button type="button" variant={selected ? 'secondary' : 'primary'} onClick={() => onSelect(player.id)}>
-          <GitCompareArrows size={16} /> {selected ? 'Selected' : 'Select for compare'}
+        <Button type="button" variant={selected ? 'secondary' : 'primary'} onClick={() => onSelect(player.id)} disabled={!selected && !canSelect}>
+          <GitCompareArrows size={16} /> {selected ? 'Selected' : canSelect ? 'Select for compare' : 'Limit reached'}
         </Button>
       </div>
     </Card>

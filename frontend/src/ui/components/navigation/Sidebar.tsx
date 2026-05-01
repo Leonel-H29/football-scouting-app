@@ -10,7 +10,6 @@ import {
 const links = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/players', label: 'Players', icon: Users },
-  { to: '/players/compare', label: 'Compare', icon: GitCompareArrows },
   { to: '/profile', label: 'Profile', icon: UserCircle2 },
 ];
 

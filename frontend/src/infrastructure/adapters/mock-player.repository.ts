@@ -1,7 +1,6 @@
 import { PlayerRepository } from '@/domain/ports/player.port';
-import { CompareResult, PlayerListFilters, PlayerListItem, Season, Team } from '@/shared/types/domain';
+import { CompareResult, PaginationMeta, PlayerListFilters, PlayerListItem, PlayerSearchResult, Season, Team } from '@/shared/types/domain';
 import { Result, err, ok } from '@/shared/types/result';
-import { clamp } from '@/shared/utils/format';
 import { playerFixtures, seasonFixtures, teamFixtures } from '@/infrastructure/fixtures/players';
 
 const statKeys = [
@@ -27,17 +26,40 @@ const createRows = (items: PlayerListItem[]): CompareResult['rows'] =>
     })),
   }));
 
+const filterItems = (filters: PlayerListFilters): PlayerListItem[] =>
+  playerFixtures.filter((item) => {
+    const matchesName = !filters.name || item.player.name.toLowerCase().includes(filters.name.toLowerCase());
+    const matchesPosition = !filters.position || item.player.position === filters.position;
+    const matchesNationality = !filters.nationality || item.player.nationality.toLowerCase().includes(filters.nationality.toLowerCase());
+    const matchesMinAge = filters.minAge === undefined || item.player.age >= filters.minAge;
+    const matchesMaxAge = filters.maxAge === undefined || item.player.age <= filters.maxAge;
+    return matchesName && matchesPosition && matchesNationality && matchesMinAge && matchesMaxAge;
+  });
+
+const buildPagination = (totalItems: number, page: number, limit: number): PaginationMeta => {
+  const safeLimit = limit > 0 ? limit : totalItems || 1;
+  const totalPages = safeLimit >= totalItems ? 1 : Math.ceil(totalItems / safeLimit);
+  const safePage = Math.min(Math.max(page, 1), totalPages);
+  return {
+    page: safePage,
+    limit: safeLimit,
+    totalItems,
+    totalPages,
+    hasNextPage: safePage < totalPages,
+    hasPreviousPage: safePage > 1,
+  };
+};
+
 export class MockPlayerRepository implements PlayerRepository {
-  async search(filters: PlayerListFilters): Promise<Result<PlayerListItem[], string>> {
-    const filtered = playerFixtures.filter((item) => {
-      const matchesName = !filters.name || item.player.name.toLowerCase().includes(filters.name.toLowerCase());
-      const matchesPosition = !filters.position || item.player.position === filters.position;
-      const matchesNationality = !filters.nationality || item.player.nationality.toLowerCase().includes(filters.nationality.toLowerCase());
-      const matchesMinAge = filters.minAge === undefined || item.player.age >= filters.minAge;
-      const matchesMaxAge = filters.maxAge === undefined || item.player.age <= filters.maxAge;
-      return matchesName && matchesPosition && matchesNationality && matchesMinAge && matchesMaxAge;
-    });
-    return ok(filtered);
+  async search(filters: PlayerListFilters): Promise<Result<PlayerSearchResult, string>> {
+    const filtered = filterItems(filters);
+    const page = filters.page ?? 1;
+    const limit = filters.limit ?? 10;
+    const pagination = buildPagination(filtered.length, page, limit);
+    const start = (pagination.page - 1) * pagination.limit;
+    const items = pagination.limit >= filtered.length ? filtered : filtered.slice(start, start + pagination.limit);
+
+    return ok({ items, pagination });
   }
 
   async compare(playerIds: readonly string[], seasonId?: string): Promise<Result<CompareResult, string>> {
