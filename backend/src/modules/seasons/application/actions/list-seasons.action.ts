@@ -1,4 +1,4 @@
-import type { SeasonListService } from '../../domain/interfaces/season-list.service.interface';
+import type { SeasonListService } from '../services/interfaces/season-list.service.interface';
 import type { ListSeasonsQuery } from '../../domain/interfaces/list-seasons-query.interface';
 import type { Season } from '../../domain/interfaces/season.interface';
 

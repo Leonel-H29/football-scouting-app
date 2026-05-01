@@ -1,5 +1,8 @@
 import { Prisma, type PrismaClient } from '@prisma/client';
 import { PrismaClientRepository } from '../../../../clients/prisma/prisma-client';
+import { PrismaPlayersWithRelations } from '../../domain/types/prisma-players-with-relations.type';
+import { PrismaPlayerStatWithSeason } from '../../domain/types/prisma-player-stat-with-relations.type';
+
 import {
   calculateAge,
   startOfTodayUtc,
@@ -12,27 +15,7 @@ import type { Player } from '../../domain/interfaces/player.interface';
 import type { PlayerStat } from '../../domain/interfaces/player-stat.interface';
 import type { Team } from '../../../teams/domain/interfaces/team.interface';
 import type { Season } from '../../../seasons/domain/interfaces/season.interface';
-import type { PlayerPosition } from '../../domain/interfaces/player-position.interface';
-
-type PrismaPlayerWithRelations = Prisma.PlayerGetPayload<{
-  include: {
-    currentTeam: true;
-    stats: {
-      include: {
-        season: true;
-      };
-      orderBy: {
-        season: {
-          year: 'desc';
-        };
-      };
-    };
-  };
-}>;
-
-type PrismaPlayerStatWithSeason = Prisma.PlayerStatsGetPayload<{
-  include: { season: true };
-}>;
+import { PlayerPositionEnum } from '../../domain/enums/player-position.enum';
 
 export class PrismaPlayerRepository
   extends PrismaClientRepository
@@ -169,7 +152,7 @@ export class PrismaPlayerRepository
     });
   }
 
-  private mapPlayer(player: PrismaPlayerWithRelations): Player {
+  private mapPlayer(player: PrismaPlayersWithRelations): Player {
     const referenceDate = startOfTodayUtc();
     const birthDate = new Date(player.birthDate);
 
@@ -179,13 +162,13 @@ export class PrismaPlayerRepository
       birthDate,
       age: calculateAge(birthDate, referenceDate),
       nationality: player.nationality,
-      position: player.position as PlayerPosition,
+      position: player.position as PlayerPositionEnum,
       photoUrl: player.photoUrl,
       currentTeam: this.mapTeam(player.currentTeam),
     };
   }
 
-  private mapLatestStat(player: PrismaPlayerWithRelations): PlayerStat | null {
+  private mapLatestStat(player: PrismaPlayersWithRelations): PlayerStat | null {
     const latest = player.stats[0];
     return latest === undefined ? null : this.mapPlayerStat(latest);
   }

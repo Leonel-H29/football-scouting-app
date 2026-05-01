@@ -7,23 +7,8 @@ import type { PlayerComparisonResult } from '../../domain/interfaces/player-comp
 import type { PlayerComparisonRow } from '../../domain/interfaces/player-comparison-row.interface';
 import type { PlayerComparisonValue } from '../../domain/interfaces/player-comparison-value.interface';
 import type { PlayerStat } from '../../domain/interfaces/player-stat.interface';
-import type { Season } from '../../domain/interfaces/season.interface';
-
-type ComparisonsMetricKey =
-  | 'matchesPlayed'
-  | 'starts'
-  | 'minutesPlayed'
-  | 'goals'
-  | 'assists'
-  | 'yellowCards'
-  | 'redCards'
-  | 'shots'
-  | 'shotsOnTarget'
-  | 'keyPasses'
-  | 'tackles'
-  | 'interceptions'
-  | 'dribblesCompleted'
-  | 'passAccuracy';
+import type { Season } from '../../../seasons/domain/interfaces/season.interface';
+import { ComparisonsMetricKey } from '../../domain/types/comparisons-metric-key.type';
 
 const rowDefinitions: ReadonlyArray<{
   key: ComparisonsMetricKey | 'goalsPer90';

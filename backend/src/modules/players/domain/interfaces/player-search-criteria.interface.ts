@@ -1,8 +1,8 @@
-import type { PlayerPosition } from './player-position.interface';
+import { PlayerPositionEnum } from '../enums/player-position.enum';
 
 export interface PlayerSearchCriteria {
   readonly name?: string;
-  readonly position?: PlayerPosition;
+  readonly position?: PlayerPositionEnum;
   readonly nationality?: string;
   readonly birthDateFrom?: Date;
   readonly birthDateTo?: Date;

@@ -1,0 +1,15 @@
+export type ComparisonsMetricKey =
+  | 'matchesPlayed'
+  | 'starts'
+  | 'minutesPlayed'
+  | 'goals'
+  | 'assists'
+  | 'yellowCards'
+  | 'redCards'
+  | 'shots'
+  | 'shotsOnTarget'
+  | 'keyPasses'
+  | 'tackles'
+  | 'interceptions'
+  | 'dribblesCompleted'
+  | 'passAccuracy';

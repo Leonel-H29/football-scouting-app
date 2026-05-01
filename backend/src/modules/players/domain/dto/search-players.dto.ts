@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  IsEnum,
   IsIn,
   IsInt,
   IsOptional,
@@ -9,10 +10,7 @@ import {
   Min,
 } from 'class-validator';
 import { ApiPropertyOptional } from '../../../../common/infrastructure/swagger/swagger.decorators';
-import {
-  PLAYER_POSITIONS,
-  type PlayerPosition,
-} from '../interfaces/player-position.interface';
+import { PlayerPositionEnum } from '../enums/player-position.enum';
 import type { SearchPlayersQuery } from '../interfaces/search-players-query.interface';
 
 export class SearchPlayersQueryDto implements SearchPlayersQuery {
@@ -27,11 +25,11 @@ export class SearchPlayersQueryDto implements SearchPlayersQuery {
 
   @ApiPropertyOptional({
     description: 'Filter by player position',
-    enum: PLAYER_POSITIONS,
+    enum: Object.values(PlayerPositionEnum),
   })
   @IsOptional()
-  @IsIn(PLAYER_POSITIONS)
-  position?: PlayerPosition;
+  @IsEnum(PlayerPositionEnum)
+  position?: PlayerPositionEnum;
 
   @ApiPropertyOptional({
     description: 'Filter by nationality',
