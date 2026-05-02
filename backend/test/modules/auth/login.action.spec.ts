@@ -6,6 +6,7 @@ import type { TokenService } from '../../../src/modules/auth/application/service
 describe('LoginAction', () => {
   it('returns JWT token for valid credentials', async () => {
     const userRepo: UserRepository = {
+      findById: jest.fn().mockResolvedValue(null),
       findByEmail: jest.fn(),
       findByUsername: jest.fn().mockResolvedValue({
         id: 'u1',
@@ -13,11 +14,12 @@ describe('LoginAction', () => {
         surname: 'Messi',
         email: 'leo@example.com',
         username: 'leo10',
-        passwordHash: 'hash',
+        password: 'hash',
         createdAt: new Date(),
         updatedAt: new Date(),
       }),
       create: jest.fn(),
+      updateById: jest.fn(),
     };
 
     const passwordHasher: PasswordHasher = {

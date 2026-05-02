@@ -14,6 +14,7 @@ export const swaggerDocument = {
   tags: [
     { name: 'Health' },
     { name: 'Auth' },
+    { name: 'Users' },
     { name: 'Players' },
     { name: 'Teams' },
     { name: 'Seasons' },
@@ -81,6 +82,109 @@ export const swaggerDocument = {
           401: {
             description: 'Invalid credentials',
           },
+        },
+      },
+    },
+    '/api/users/{id}': {
+      get: {
+        tags: ['Users'],
+        summary: 'Find user by id',
+        security: [{ BearerAuth: [] }],
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        ],
+        responses: {
+          200: { description: 'User returned successfully' },
+          400: { description: 'Invalid path parameter' },
+          401: { description: 'Unauthorized' },
+          404: { description: 'User not found' },
+        },
+      },
+      put: {
+        tags: ['Users'],
+        summary: 'Update user',
+        security: [{ BearerAuth: [] }],
+        parameters: [
+          {
+            name: 'id',
+            in: 'path',
+            required: true,
+            schema: { type: 'string', format: 'uuid' },
+          },
+        ],
+        requestBody: {
+          required: true,
+          content: {
+            'application/json': {
+              schema: {
+                $ref: '#/components/schemas/UpdateUserRequest',
+              },
+            },
+          },
+        },
+        responses: {
+          200: { description: 'User updated successfully' },
+          400: { description: 'Invalid payload' },
+          401: { description: 'Unauthorized' },
+          404: { description: 'User not found' },
+          409: { description: 'Email or username already exists' },
+        },
+      },
+    },
+    '/api/users/by-email': {
+      get: {
+        tags: ['Users'],
+        summary: 'Find user by email',
+        security: [{ BearerAuth: [] }],
+        parameters: [
+          {
+            name: 'email',
+            in: 'query',
+            required: true,
+            schema: {
+              type: 'string',
+              format: 'email',
+              minLength: 6,
+              maxLength: 254,
+            },
+          },
+        ],
+        responses: {
+          200: { description: 'User returned successfully' },
+          400: { description: 'Invalid query parameter' },
+          401: { description: 'Unauthorized' },
+          404: { description: 'User not found' },
+        },
+      },
+    },
+    '/api/users/password/by-email': {
+      get: {
+        tags: ['Users'],
+        summary: 'Get user password hash by email',
+        security: [{ BearerAuth: [] }],
+        parameters: [
+          {
+            name: 'email',
+            in: 'query',
+            required: true,
+            schema: {
+              type: 'string',
+              format: 'email',
+              minLength: 6,
+              maxLength: 254,
+            },
+          },
+        ],
+        responses: {
+          200: { description: 'Password hash returned successfully' },
+          400: { description: 'Invalid query parameter' },
+          401: { description: 'Unauthorized' },
+          404: { description: 'User not found' },
         },
       },
     },
@@ -301,6 +405,59 @@ export const swaggerDocument = {
         properties: {
           username: { type: 'string', minLength: 4, maxLength: 30 },
           password: { type: 'string', minLength: 8, maxLength: 128 },
+        },
+      },
+      User: {
+        type: 'object',
+        required: ['id', 'name', 'surname', 'email', 'username'],
+        properties: {
+          id: { type: 'string', format: 'uuid' },
+          name: { type: 'string', minLength: 2, maxLength: 60 },
+          surname: { type: 'string', minLength: 2, maxLength: 60 },
+          email: {
+            type: 'string',
+            format: 'email',
+            minLength: 6,
+            maxLength: 254,
+          },
+          username: { type: 'string', minLength: 4, maxLength: 30 },
+        },
+      },
+      UpdateUserRequest: {
+        type: 'object',
+        required: [
+          'name',
+          'surname',
+          'email',
+          'username',
+          'password',
+          'confirmPassword',
+        ],
+        properties: {
+          name: { type: 'string', minLength: 2, maxLength: 60 },
+          surname: { type: 'string', minLength: 2, maxLength: 60 },
+          email: {
+            type: 'string',
+            format: 'email',
+            minLength: 6,
+            maxLength: 254,
+          },
+          username: { type: 'string', minLength: 4, maxLength: 30 },
+          password: { type: 'string', minLength: 8, maxLength: 128 },
+          confirmPassword: { type: 'string', minLength: 8, maxLength: 128 },
+        },
+      },
+      PasswordByEmailResponse: {
+        type: 'object',
+        required: ['email', 'passwordHash'],
+        properties: {
+          email: {
+            type: 'string',
+            format: 'email',
+            minLength: 6,
+            maxLength: 254,
+          },
+          passwordHash: { type: 'string', minLength: 20 },
         },
       },
       Position: {

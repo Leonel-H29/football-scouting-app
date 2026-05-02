@@ -5,6 +5,7 @@ import type { PasswordHasher } from '../../../src/modules/auth/application/servi
 describe('RegisterAction', () => {
   it('registers a user successfully', async () => {
     const userRepo: UserRepository = {
+      findById: jest.fn().mockResolvedValue(null),
       findByEmail: jest.fn().mockResolvedValue(null),
       findByUsername: jest.fn().mockResolvedValue(null),
       create: jest.fn().mockResolvedValue({
@@ -13,10 +14,11 @@ describe('RegisterAction', () => {
         surname: 'Messi',
         email: 'leo@example.com',
         username: 'leo10',
-        passwordHash: 'hash',
+        password: 'hash',
         createdAt: new Date(),
         updatedAt: new Date(),
       }),
+      updateById: jest.fn(),
     };
 
     const passwordHasher: PasswordHasher = {

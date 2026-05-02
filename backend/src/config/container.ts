@@ -13,18 +13,24 @@ import { PrismaSeasonRepository } from '../modules/seasons/infrastructure/reposi
 import { SeasonListServiceImpl } from '../modules/seasons/application/services/season-list.service';
 import { ListSeasonsAction } from '../modules/seasons/application/actions/list-seasons.action';
 import { SeasonsController } from '../modules/seasons/infrastructure/controllers/seasons.controller';
-import { PrismaUserRepository } from '../modules/auth/infrastructure/repositories/prisma-user.repository';
+import { PrismaUserRepository } from '../modules/user/infrastructure/repositories/prisma-user.repository';
 import { BcryptPasswordHasherService } from '../modules/auth/application/services/bcrypt-password-hasher.service';
 import { JwtTokenService } from '../modules/auth/application/services/jwt-token.service';
 import { RegisterAction } from '../modules/auth/application/actions/register.action';
 import { LoginAction } from '../modules/auth/application/actions/login.action';
 import { AuthController } from '../modules/auth/infrastructure/controllers/auth.controller';
+import { FindUserByIdAction } from '../modules/user/application/actions/find-user-by-id.action';
+import { FindUserByEmailAction } from '../modules/user/application/actions/find-user-by-email.action';
+import { UpdateUserAction } from '../modules/user/application/actions/update-user.action';
+import { GetUserPasswordByEmailAction } from '../modules/user/application/actions/get-user-password-by-email.action';
+import { UsersController } from '../modules/user/infrastructure/controllers/users.controller';
 
 export const createControllers = (): {
   readonly playersController: PlayersController;
   readonly teamsController: TeamsController;
   readonly seasonsController: SeasonsController;
   readonly authController: AuthController;
+  readonly usersController: UsersController;
   readonly jwtTokenService: JwtTokenService;
 } => {
   const playerRepository = new PrismaPlayerRepository(prismaClient);
@@ -57,6 +63,12 @@ export const createControllers = (): {
     passwordHasher,
     jwtTokenService
   );
+  const findUserByIdAction = new FindUserByIdAction(userRepository);
+  const findUserByEmailAction = new FindUserByEmailAction(userRepository);
+  const updateUserAction = new UpdateUserAction(userRepository, passwordHasher);
+  const getUserPasswordByEmailAction = new GetUserPasswordByEmailAction(
+    userRepository
+  );
 
   return {
     playersController: new PlayersController(
@@ -66,6 +78,12 @@ export const createControllers = (): {
     teamsController: new TeamsController(listTeamsAction),
     seasonsController: new SeasonsController(listSeasonsAction),
     authController: new AuthController(registerAction, loginAction),
+    usersController: new UsersController(
+      findUserByIdAction,
+      findUserByEmailAction,
+      updateUserAction,
+      getUserPasswordByEmailAction
+    ),
     jwtTokenService,
   };
 };

@@ -1,0 +1,48 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "name": "Backend: Debug (ts-node-dev)",
+        "type": "node",
+        "request": "launch",
+        "cwd": "${workspaceFolder}/backend",
+        "runtimeExecutable": "npx",
+        "runtimeArgs": [
+          "ts-node-dev",
+          "--respawn",
+          "--transpile-only",
+          "src/index.ts"
+        ],
+        "console": "integratedTerminal",
+        "restart": true,
+        "envFile": "${workspaceFolder}/backend/.env",
+        "skipFiles": ["<node_internals>/**"]
+      },
+      {
+        "name": "Backend: Debug (compiled JS)",
+        "type": "node",
+        "request": "launch",
+        "cwd": "${workspaceFolder}/backend",
+        "program": "${workspaceFolder}/backend/dist/src/index.js",
+        "preLaunchTask": "npm: build",
+        "console": "integratedTerminal",
+        "envFile": "${workspaceFolder}/backend/.env",
+        "skipFiles": ["<node_internals>/**"]
+      },
+      {
+        "name": "Backend: Jest current file",
+        "type": "node",
+        "request": "launch",
+        "cwd": "${workspaceFolder}/backend",
+        "runtimeExecutable": "npx",
+        "runtimeArgs": [
+          "jest",
+          "${fileBasenameNoExtension}",
+          "--runInBand"
+        ],
+        "console": "integratedTerminal",
+        "envFile": "${workspaceFolder}/backend/.env",
+        "skipFiles": ["<node_internals>/**"]
+      }
+    ]
+  }

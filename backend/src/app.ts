@@ -9,10 +9,12 @@ import type { PlayersController } from './modules/players/infrastructure/control
 import type { TeamsController } from './modules/teams/infrastructure/controllers/teams.controller';
 import type { SeasonsController } from './modules/seasons/infrastructure/controllers/seasons.controller';
 import type { AuthController } from './modules/auth/infrastructure/controllers/auth.controller';
+import type { UsersController } from './modules/user/infrastructure/controllers/users.controller';
 import { createPlayersRouter } from './modules/players/infrastructure/router';
 import { createTeamRouter } from './modules/teams/infrastructure/router';
 import { createSeasonRouter } from './modules/seasons/infrastructure/router';
 import { createAuthRouter } from './modules/auth/infrastructure/routes';
+import { createUserRouter } from './modules/user/infrastructure/routes'
 import { authenticateJwtMiddleware } from './modules/auth/infrastructure/middlewares/authenticate-jwt.middleware';
 import type { JwtTokenService } from './modules/auth/application/services/jwt-token.service';
 import { config } from './config/config';
@@ -22,6 +24,7 @@ export const createApp = (controllers: {
   readonly teamsController: TeamsController;
   readonly seasonsController: SeasonsController;
   readonly authController: AuthController;
+  readonly usersController: UsersController;
   readonly jwtTokenService: JwtTokenService;
 }): Express => {
   const app = express();
@@ -49,6 +52,7 @@ export const createApp = (controllers: {
   app.use('/api/auth', createAuthRouter(controllers.authController));
 
   app.use(authenticateJwtMiddleware(controllers.jwtTokenService));
+  app.use('/api/users', createUserRouter(controllers.usersController));
   app.use('/api/players', createPlayersRouter(controllers.playersController));
   app.use('/api/teams', createTeamRouter(controllers.teamsController));
   app.use('/api/seasons', createSeasonRouter(controllers.seasonsController));

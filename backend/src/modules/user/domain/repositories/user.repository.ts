@@ -1,4 +1,4 @@
-import type { CreateUserInput } from '../../../user/domain/interfaces/create-user-input.interface';
+import type { CreateUserInput } from '../interfaces/create-user-input.interface';
 import type { UpdateUserInput } from '../interfaces/update-user-input.interface';
 import type { User } from '../../../user/domain/interfaces/user.interface';
 
