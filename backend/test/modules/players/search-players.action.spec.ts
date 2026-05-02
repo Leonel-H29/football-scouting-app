@@ -2,6 +2,7 @@ import { SearchPlayersAction } from '../../../src/modules/players/application/ac
 import type { PlayerFilterService } from '../../../src/modules/players/application/services/interfaces/player-filter.service.interface';
 import type { PlayerRepository } from '../../../src/modules/players/domain/repositories/player-repository.interface';
 import type { PlayerSearchCriteria } from '../../../src/modules/players/domain/interfaces/player-search-criteria.interface';
+import { PlayerPositionEnum } from '../../../src/modules/players/domain/enums/player-position.enum';
 
 describe('SearchPlayersAction', () => {
   it('delegates to filter service and repository', async () => {
@@ -21,12 +22,12 @@ describe('SearchPlayersAction', () => {
     const action = new SearchPlayersAction(repository, filterService);
     await action.execute({
       name: 'Leo',
-      position: 'FORWARD',
+      position: PlayerPositionEnum.FORWARD,
     });
 
     expect(filterService.buildCriteria).toHaveBeenCalledWith({
       name: 'Leo',
-      position: 'FORWARD',
+      position: PlayerPositionEnum.FORWARD,
     });
     expect(repository.search).toHaveBeenCalledWith(criteria);
   });

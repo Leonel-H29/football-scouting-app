@@ -25,11 +25,12 @@ export const createApp = (controllers: {
   readonly jwtTokenService: JwtTokenService;
 }): Express => {
   const app = express();
+  const allowedOrigins = config.webUrl.split(',') || [];
 
   app.use(helmet());
   app.use(
     cors({
-      origin: config.webUrl,
+      origin: allowedOrigins,
       credentials: true,
     })
   );

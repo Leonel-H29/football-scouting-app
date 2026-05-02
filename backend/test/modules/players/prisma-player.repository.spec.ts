@@ -1,5 +1,6 @@
 import { PrismaPlayerRepository } from '../../../src/modules/players/infrastructure/repositories/prisma-player.repository';
 import type { PrismaClient } from '@prisma/client';
+import { PlayerPositionEnum } from '../../../src/modules/players/domain/enums/player-position.enum';
 
 describe('PrismaPlayerRepository', () => {
   it('builds the expected prisma query for search', async () => {
@@ -14,7 +15,7 @@ describe('PrismaPlayerRepository', () => {
     await repository.search({
       name: 'Leo',
       nationality: 'Argentina',
-      position: 'FORWARD',
+      position:  PlayerPositionEnum.DEFENDER,
       birthDateFrom: new Date('1990-01-01T00:00:00.000Z'),
       birthDateTo: new Date('2000-01-01T00:00:00.000Z'),
     });

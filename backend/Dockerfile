@@ -1,44 +1,31 @@
-FROM node:22-alpine AS base
+# Use Node LTS
+FROM node:20-slim
+
+# Set working directory
 WORKDIR /app
 
-RUN apk add --no-cache openssl libc6-compat
+RUN apt-get update && apt-get install -y openssl
 
-# -----------------------------
-# Dependencies stage
-# -----------------------------
-FROM base AS deps
+# Install dependencies first (better caching)
 COPY package*.json ./
 RUN npm install
 
-# -----------------------------
-# Build stage
-# -----------------------------
-FROM base AS builder
-COPY --from=deps /app/node_modules ./node_modules
-COPY package*.json ./
-COPY tsconfig.json jest.config.ts ./
+# Copy Prisma schema separately (needed before generate)
 COPY prisma ./prisma
-COPY src ./src
-COPY test ./test
 
+# Generate Prisma client
 RUN npx prisma generate
+
+# Copy rest of the app
+COPY . .
+
+# Build TypeScript
 RUN npm run build
 
-# -----------------------------
-# Runtime stage
-# -----------------------------
-FROM base AS runtime
-WORKDIR /app
-ENV NODE_ENV=production
-
-COPY package*.json ./
-RUN npm install --omit=dev
-
-COPY prisma ./prisma
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
-
+# Expose port
 EXPOSE 3000
 
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/src/index.js"]
+RUN chmod +x /app/script/docker-entrypoint.sh
+
+# Start command
+CMD ["sh", "-c", "/app/script/docker-entrypoint.sh"]

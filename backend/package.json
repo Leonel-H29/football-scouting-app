@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Football Scout Backend - Clean Architecture with Express, Prisma, JWT",
   "main": "dist/index.js",
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
+  },
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
     "build": "tsc",
@@ -15,8 +18,7 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy",
-    "prisma:studio": "prisma studio",
-    "seed": "ts-node prisma/seed.ts"
+    "prisma:studio": "prisma studio"
   },
   "keywords": [],
   "author": "",

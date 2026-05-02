@@ -8,18 +8,18 @@ describe('DTO validation', () => {
     const dto = validateDto(
       SearchPlayersQueryDto,
       {
-        name: ' Lautaro ',
+        name: 'Lautaro ',
         position: 'FORWARD',
         nationality: 'Argentina',
         minAge: '20',
-        maxAge: '30'
+        maxAge: '30',
       },
       'Invalid player search filters'
     );
 
     expect(dto.minAge).toBe(20);
     expect(dto.maxAge).toBe(30);
-    expect(dto.name).toBe(' Lautaro ');
+    expect(dto.name).toBe(' Lautaro');
   });
 
   it('rejects duplicate player ids in comparison payload', () => {
@@ -27,7 +27,7 @@ describe('DTO validation', () => {
       validateDto(
         ComparePlayersBodyDto,
         {
-          playerIds: ['player-1', 'player-1']
+          playerIds: ['player-1', 'player-1'],
         },
         'Invalid comparison payload'
       );
