@@ -1,6 +1,6 @@
 import { UnauthorizedError } from '../../../../common/domain/errors/unauthorized-error';
 import type { LoginDto } from '../../domain/dto/login.dto';
-import type { UserRepository } from '../../domain/repositories/user.repository';
+import type { UserRepository } from '../../../user/domain/repositories/user.repository';
 import type { PasswordHasher } from '../services/interfaces/password-hasher.interface';
 import type { TokenService } from '../services/interfaces/token-service.interface';
 import { LoginResult } from '../actions/interfaces/login-result.interface';

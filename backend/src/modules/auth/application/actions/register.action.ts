@@ -1,7 +1,7 @@
 import { ConflictError } from '../../../../common/domain/errors/conflict-error';
 import { BadRequestError } from '../../../../common/domain/errors/bad-request-error';
 import type { RegisterDto } from '../../domain/dto/register.dto';
-import type { UserRepository } from '../../domain/repositories/user.repository';
+import type { UserRepository } from '../../../user/domain/repositories/user.repository';
 import type { PasswordHasher } from '../services/interfaces/password-hasher.interface';
 import { RegisterResult } from '../actions/interfaces/register-result.interface';
 

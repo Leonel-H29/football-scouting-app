@@ -1,5 +1,5 @@
 import { NotFoundError } from '../../../../common/domain/errors/not-found-error';
-import type { UserRepository } from '../../domain/repositories/user.repository';
+import type { UserRepository } from '../../../user/domain/repositories/user.repository';
 import type { UserResult } from './interfaces/user-result.interface';
 import { toUserResult } from './mappers/to-user-result.mapper';
 
