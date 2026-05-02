@@ -5,6 +5,7 @@ import { AppLayout } from '@/ui/components/layout/AppLayout';
 import { ProtectedRoute } from '@/ui/components/routing/ProtectedRoute';
 import { LoginPage } from '@/ui/pages/auth/LoginPage';
 import { RegisterPage } from '@/ui/pages/auth/RegisterPage';
+import { ForgotPasswordPage } from '@/ui/pages/auth/ForgotPasswordPage';
 import { DashboardPage } from '@/ui/pages/dashboard/DashboardPage';
 import { PlayersPage } from '@/ui/pages/players/PlayersPage';
 import { FavoritePlayersPage } from '@/ui/pages/players/FavoritePlayersPage';
@@ -17,6 +18,7 @@ export const AppRouter = () => (
     <Route element={<AuthLayout />}>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
     </Route>
 
     <Route

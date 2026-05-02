@@ -106,6 +106,15 @@ export interface LoginPayload {
   password: string;
 }
 
+export interface UpdateUserPayload {
+  name: string;
+  surname: string;
+  email: string;
+  username: string;
+  password: string;
+  confirmPassword: string;
+}
+
 export interface PlayerQuery {
   name: string;
   position: Position | 'ALL';
