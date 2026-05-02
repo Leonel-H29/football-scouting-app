@@ -49,8 +49,6 @@ VITE_API_BASE_URL=http://localhost:3000
 VITE_USE_MOCK_API=false
 ```
 
-````
-
 - `VITE_API_BASE_URL`: backend base URL
 - `VITE_USE_MOCK_API`:
   - `false` => use backend first, fallback to mock data on network failure
@@ -135,6 +133,7 @@ Frontend still runs locally via `frontend/npm run dev`.
 3. Backend returns a JWT access token.
 4. Frontend stores session/user data in `localStorage`.
 5. Protected routes (`/dashboard`, `/players`, `/profile`, etc.) require a valid session.
+<img width="1828" height="880" alt="Screenshot from 2026-05-02 18-52-40" src="https://github.com/user-attachments/assets/691c477c-36b7-4fc9-8411-8e8ab366e1f0" />
 
 ### 2) Authorization Flow (Protected API)
 
@@ -150,12 +149,22 @@ Frontend still runs locally via `frontend/npm run dev`.
 3. Service queries Prisma repository and applies pagination.
 4. Response includes `data` + `pagination`.
 
+<img width="1828" height="880" alt="Screenshot from 2026-05-02 18-49-40" src="https://github.com/user-attachments/assets/6ec50cc1-bd94-43be-b1e6-675e23536dbd" />
+
+// Favorite players
+
+<img width="1828" height="880" alt="Screenshot from 2026-05-02 18-50-34" src="https://github.com/user-attachments/assets/e85f75f6-3e19-4d1b-a859-cf334c2ba5df" />
+
 ### 4) Player Comparison Flow
 
 1. User selects 2–3 players.
 2. Frontend sends `POST /api/players/compare` with `playerIds` and optional `seasonId`.
 3. Backend aggregates stats and returns side-by-side comparison rows.
 4. Frontend renders comparison table/charts.
+
+
+<img width="1828" height="880" alt="Screenshot from 2026-05-02 18-50-05" src="https://github.com/user-attachments/assets/3d62712d-21fb-472d-956b-e64366e3347d" />
+
 
 ### 5) Profile Management Flow
 
@@ -205,4 +214,3 @@ football-scouting-app/
 ```
 
 For module-level API details, request/response schemas, and endpoint behavior, see [`backend/README.md`](./backend/README.md).
-````
