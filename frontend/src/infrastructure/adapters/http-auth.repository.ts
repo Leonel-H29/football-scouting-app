@@ -1,5 +1,7 @@
 import { AuthRepository } from '@/domain/ports/auth.port';
 import { HttpClient } from '@/infrastructure/api/http-client';
+import { LoginResponse } from '@/infrastructure/adapters/types/auth/LoginResponse';
+import { RegisterResponse } from '@/infrastructure/adapters/types/auth/RegisterResponse';
 import { storage, storageKeys } from '@/infrastructure/storage/local-storage';
 import {
   AuthSession,
@@ -9,32 +11,9 @@ import {
   UpdateUserPayload,
 } from '@/shared/types/domain';
 import { Result, err, ok } from '@/shared/types/result';
-
-interface RegisterResponse {
-  id: string;
-  name: string;
-  surname: string;
-  email: string;
-  username: string;
-}
-
-interface LoginResponse {
-  accessToken: string;
-  tokenType: 'Bearer';
-}
+import { readJson } from '@/shared/utils/readJson';
 
 const passwordKey = 'scoutinglab.current.password';
-
-const readJson = <T>(raw: string | null, fallback: T): T => {
-  if (!raw) {
-    return fallback;
-  }
-  try {
-    return JSON.parse(raw) as T;
-  } catch {
-    return fallback;
-  }
-};
 
 export class HttpAuthRepository implements AuthRepository {
   constructor(private readonly client: HttpClient) {}

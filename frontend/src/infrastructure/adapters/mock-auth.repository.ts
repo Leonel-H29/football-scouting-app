@@ -8,21 +8,11 @@ import {
 } from '@/shared/types/domain';
 import { Result, err, ok } from '@/shared/types/result';
 import { storage, storageKeys } from '@/infrastructure/storage/local-storage';
+import { readJson } from '@/shared/utils/readJson';
 
 const userKey = storageKeys.user;
 const sessionKey = storageKeys.session;
 const passwordKey = 'scoutinglab.current.password';
-
-const readJson = <T>(raw: string | null, fallback: T): T => {
-  if (!raw) {
-    return fallback;
-  }
-  try {
-    return JSON.parse(raw) as T;
-  } catch {
-    return fallback;
-  }
-};
 
 const readUsers = (): AuthUser[] =>
   readJson(storage.readString('scoutinglab.mock.users'), []);

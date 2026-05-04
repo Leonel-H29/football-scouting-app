@@ -1,5 +1,7 @@
 import { PlayerRepository } from '@/domain/ports/player.port';
 import { HttpClient } from '@/infrastructure/api/http-client';
+import { CompareResponse } from '@/infrastructure/adapters/types/player/CompareResponse';
+import { PlayerSearchResponseItem } from '@/infrastructure/adapters/types/player/PlayerSearchResponseItem';
 import {
   CompareResult,
   PlayerListFilters,
@@ -9,13 +11,6 @@ import {
   Team,
 } from '@/shared/types/domain';
 import { Result, err, ok } from '@/shared/types/result';
-
-interface PlayerSearchResponseItem {
-  player: PlayerSearchResult['items'][number]['player'];
-  latestStat: PlayerSearchResult['items'][number]['latestStat'];
-}
-
-interface CompareResponse extends CompareResult {}
 
 const DEFAULT_LIMIT = 10;
 const ALL_LIMIT = 100;

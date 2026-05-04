@@ -1,38 +1,7 @@
-import { PaginationMeta } from '@/shared/types/domain';
-
-export interface SuccessEnvelope<T> {
-  success: true;
-  data: T;
-}
-
-export interface ValidationIssue {
-  property: string;
-  constraints: Record<string, string>;
-}
-
-export interface ApiErrorPayload {
-  code: string;
-  message: string;
-  issues?: ValidationIssue[];
-}
-
-export interface ErrorEnvelope {
-  success: false;
-  error: ApiErrorPayload;
-}
-
-export type Envelope<T> = SuccessEnvelope<T> | ErrorEnvelope;
-
-export interface HttpError {
-  code: string;
-  message: string;
-  issues?: ValidationIssue[];
-}
-
-export interface HttpResult<T> {
-  ok: boolean;
-  status: number;
-  data?: T;
-  pagination?: PaginationMeta;
-  error?: HttpError;
-}
+export type { SuccessEnvelope } from '@/shared/types/api/SuccessEnvelope';
+export type { ValidationIssue } from '@/shared/types/api/ValidationIssue';
+export type { ApiErrorPayload } from '@/shared/types/api/ApiErrorPayload';
+export type { ErrorEnvelope } from '@/shared/types/api/ErrorEnvelope';
+export type { Envelope } from '@/shared/types/api/Envelope';
+export type { HttpError } from '@/shared/types/api/HttpError';
+export type { HttpResult } from '@/shared/types/api/HttpResult';
